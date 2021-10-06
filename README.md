@@ -23,7 +23,7 @@ First, follow this tutorial on the Discord Developer Portal to create a bot
 ```https://discordpy.readthedocs.io/en/stable/discord.html```
 
 ### Running on Linux or Mac
-Then download the installation script from [here] and run ```chmod +x dwayne.sh```
+Then download the installation script from https://github.com/marceloclubhouse/dwayne/releases/download/v0.0.1/dwayne.sh and run ```chmod +x dwayne.sh```
 then ```./dwayne.sh```
 
 Upon running this script the first time, you will be asked to provide your bot's access token. 
