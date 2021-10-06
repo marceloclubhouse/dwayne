@@ -23,7 +23,7 @@ To use Dwayne, you need to link him to an existing Discord bot via token, then r
 First, follow this tutorial on the Discord Developer Portal to create a bot
 ```https://discordpy.readthedocs.io/en/stable/discord.html```
 
-### Running on Linux or Mac
+### Linux or Mac
 Then download the installation script from https://github.com/marceloclubhouse/dwayne/releases/download/v0.0.1/dwayne.sh and run ```chmod +x dwayne.sh```
 then ```./dwayne.sh```
 
@@ -33,13 +33,13 @@ and can be called after the initial installation to run Dwayne whenever you want
 
 Whenever you want to run Dwayne, simply execute his script! ```./dwayne.sh```
 
-### Installation + Running on Windows
+### Windows
 To run Dwayne on Windows, make sure you have Python 3 installed. Then
 create a virtual environment based off of Dwayne's requirements, and run
 ```main.py``` with your bot's access token as an argument.
 
-### Potential Ideas for You
-* You could run Dwayne off of a local Linux VM
+### Potential Ideas for Running Dwayne
+* You could run Dwayne off of a local Linux VM if you can't setup Dwayne on Windows
 * Or run Dwayne off of a VPS! (that's what I do)
 
 ### TODO
