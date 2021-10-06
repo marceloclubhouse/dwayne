@@ -6,10 +6,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("token", help="Discord access token")
 args = parser.parse_args()
 TOKEN = args.token
+print(f"Running Dwayne using token: {TOKEN}")
 
 if __name__ == '__main__':
     bot = commands.Bot(command_prefix="!", description='Dwayne')
-    bot.load_extension("dwayne")
+    bot.load_extension("cogs.dwayne")
 
     @bot.event
     async def on_ready():

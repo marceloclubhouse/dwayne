@@ -1,17 +1,19 @@
 # dwayne
-## A less-than-perfect alternative to Groovy and Rhythm
-### Requirements
+### A less-than-perfect alternative to Groovy and Rhythm
+Dwayne is a Discord music bot backend. He can be linked to a Discord Bot and stream YouTube music live inside a voice channel.
+## Requirements
+* Git
 * Python 3
 * Pip 3
 * macOS or Linux
   * Dwayne will run under Windows but since I don't know Powershell there's no setup script :(
 * Discord Developer account
 
-### Features
+## Features
 * Stream music off of YouTube in Discord
 * Queue songs and automatically play them one after the other
 
-### Commands
+## Commands
 * !play - Play a YouTube video in a voice channel
 * !stop - Stop playing music
 * !heydwayne - Ping Dwayne to see if he's online
