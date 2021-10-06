@@ -44,11 +44,11 @@ create a virtual environment based off of Dwayne's requirements, and run
 
 You can do this method on Linux too but I figured it would be nice to automate it with a script :)
 
-### Potential Ideas for Running Dwayne
+## Potential Ideas for Running Dwayne
 * You could run Dwayne off of a local Linux VM if you can't setup Dwayne on Windows
 * Or run Dwayne off of a VPS! (that's what I do)
 
-### TODO
+## TODO
 * Improve download speeds
 * Create a GUI for Dwayne
 * Implement skipping
