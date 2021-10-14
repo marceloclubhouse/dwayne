@@ -1,3 +1,12 @@
+"""
+dwayne
+A back-end Discord bot created as an alternative to Groovy and Rhythm
+Copyright (C) 2021 Marcelo Cubillos
+This project is available under the MIT license, see LICENSE.txt for more details
+
+main.py
+"""
+
 import discord
 import argparse
 from discord.ext import commands

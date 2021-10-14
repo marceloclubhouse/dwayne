@@ -1,35 +1,44 @@
 #!/bin/bash
 
-name="dwayne.sh"
+# dwayne
+# A back-end Discord bot created as an alternative to Groovy and Rhythm
+# Copyright (C) 2021 Marcelo Cubillos
+# This project is available under the MIT license, see LICENSE.txt for more details
+#
+# dwayne.sh
 
-echo "$name : Running Dwayne script..."
+RED='\033[0;31m'
+NC='\033[0m'
+name="${RED}dwayne.sh${NC}"
+
+echo -e "$name : Running Dwayne script..."
 if test -f "main.py"; then
-    echo "$name : Do not execute dwayne.sh in the same directory as Dwayne (otherwise duplicate files will be created)."
+    echo -e "$name : Do not execute dwayne.sh in the same directory as Dwayne (otherwise duplicate files will be created)."
     exit 1
 fi
 if ! test -f "token.txt"; then
-    echo "$name : Token not found; paste your bot's token here: "
+    echo -e "$name : Token not found; paste your bot's token here: "
     read token
-    echo "$token" > token.txt
+    echo -e "$token" > token.txt
 fi
-echo "$name : Deleting old Dwayne files..."
+echo -e "$name : Deleting old Dwayne files..."
 rm -frv dwayne
-echo "$name : Cloning new Dwayne files from Github repo..."
+echo -e "$name : Cloning new Dwayne files from Github repo..."
 git clone https://github.com/marceloclubhouse/dwayne
 cd dwayne || return
 if [ ! -d "venv" ]; then
-    echo "$name : Virtual environment not found."
-    echo "$name : Installing virtualenv..."
+    echo -e "$name : Virtual environment not found."
+    echo -e "$name : Installing virtualenv..."
     pip3 install virtualenv
-    echo "$name : Creating virtual environment..."
+    echo -e "$name : Creating virtual environment..."
     virtualenv venv
     source venv/bin/activate
-    echo "$name : Installing Dwayne's packages..."
+    echo -e "$name : Installing Dwayne's packages..."
     pip3 install -r "requirements.txt"
-    echo "$name : Exiting environment and going back to root directory..."
+    echo -e "$name : Exiting environment and going back to root directory..."
     deactivate
     cd ..
 fi
 source dwayne/venv/bin/activate
-echo "$name : Running Dwayne"
+echo -e "$name : Running Dwayne"
 python3 dwayne/main.py "$(cat token.txt)"

@@ -1,5 +1,15 @@
+"""
+dwayne
+A back-end Discord bot created as an alternative to Groovy and Rhythm
+Copyright (C) 2021 Marcelo Cubillos
+This project is available under the MIT license, see LICENSE.txt for more details
+
+dwayne.py
+"""
+
 import asyncio
 import discord
+import yt_dlp
 import youtube_dl
 import os
 import re
@@ -39,11 +49,9 @@ class DwayneBOT(commands.Cog):
 
         # Always start by queueing the song in internal list
         self.song_queue.append(url)
-
         # Get YouTube video info with YT libs
         song_info = self.video_info(url)
-
-        # If a song is already playing, then don't continue
+        # If a song is already playing, then queue it and return
         if self.playing:
             await ctx.send(f"Got it! Just queued {song_info['title']}. Current song queue is:",
                            embed=self.queue_as_embed(ctx))
@@ -59,11 +67,14 @@ class DwayneBOT(commands.Cog):
             current_song = self.song_queue.pop(0)
             song_info = self.video_info(current_song)
 
-            # This function hangs, should potentially be replaced
-            self.yt_to_mp3(current_song)  # downloads to song.mp3
+            # Download current song in queue to ./song.mp3
+            self.yt_to_mp3(current_song)
 
+            # Play song and notify it's playing
             await ctx.send(f"Now playing {song_info['title']}")
             self.voice.play(discord.FFmpegPCMAudio('song.mp3'))
+
+            # Play until the song is over
             while self.voice.is_playing():
                 await asyncio.sleep(1)
             self.voice.stop()
@@ -89,30 +100,38 @@ class DwayneBOT(commands.Cog):
     def yt_to_mp3(url: str) -> None:
         """
         Download YouTube video as 'song.mp3' in current
-        directory using youtube_dl
+        directory using yt-dlp
         """
+
+        # Delete previous song
         print("Deleting previous song...")
         try:
             os.remove("song.mp3")
         except FileNotFoundError:
             pass
+
+        # Download current song
         print("Downloading YouTube video...")
-        video_info = youtube_dl.YoutubeDL().extract_info(
-            url=url, download=False
-        )
-        filename = "song.mp3"
         options = {
             'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
             'keepvideo': False,
-            'outtmpl': filename,
+            'outtmpl': "song.mp3",
+            'throttled-rate': '100K'
         }
-        with youtube_dl.YoutubeDL(options) as ydl:
-            ydl.download([video_info['webpage_url']])
-        print("Download complete... {}".format(filename))
+        with yt_dlp.YoutubeDL(options) as ydl:
+            ydl.download([url])
+        print(f"Finished downloading {url}")
 
     def queue_as_str(self) -> str:
         """
         Return song queue as a multi-line string
+        (no longer used, embed cards are used
+        instead but this is kept just in case)
         """
         q_str = str()
         for i, song in enumerate(self.song_queue):
@@ -135,7 +154,12 @@ class DwayneBOT(commands.Cog):
     def video_info(url: str):
         """
         Download YouTube video's meta-data and return
-        it as a dictionary
+        it as a dictionary.
+
+        This function uses youtube_dl rather than yt-dlp
+        because yt-dlp re-downloads the android player
+        API JSON, and is actually slower than youtube_dl
+        in this context.
         """
         info = youtube_dl.YoutubeDL().extract_info(url=url, download=False)
         return info

@@ -1,5 +1,5 @@
 # dwayne
-### A less-than-perfect alternative to Groovy and Rhythm
+### A back-end Discord bot created as an alternative to Groovy and Rhythm
 Dwayne is a Discord music-bot backend. He can be linked to a Discord Bot API and stream YouTube music live inside a voice channel. He can
 also queue songs and play them sequentially.
 
