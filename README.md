@@ -1,6 +1,6 @@
 # dwayne
-### A back-end Discord bot created as an alternative to Groovy and Rhythm
-Dwayne is a Discord music-bot backend. He can be linked to a Discord Bot API and stream YouTube music live inside a voice channel. He can
+### A music-playing Discord bot created as an alternative to Groovy and Rhythm 
+Dwayne is a package designed to control music-streaming via YouTube on Discord. He can be linked to a Discord Bot API and stream YouTube music live inside a voice channel. He can
 also queue songs and play them sequentially.
 
 To use Dwayne, you need to link him to an existing Discord bot via token, then run him in Python.
