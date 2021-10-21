@@ -21,6 +21,13 @@ if ! test -f "token.txt"; then
     read token
     echo -e "$token" > token.txt
 fi
+if ! test -f "yt_api_key.txt"; then
+    echo -e "$name : YouTube Data API key not found. If you want to enable play queries (e.g. '!play here comes the sun'), paste an API key here: "
+    read yt_key
+    if yt_key != ""; then
+        echo -e "$yt_key" > yt_api_key.txt
+    fi
+fi
 echo -e "$name : Deleting old Dwayne files..."
 rm -frv dwayne
 echo -e "$name : Cloning new Dwayne files from Github repo..."
