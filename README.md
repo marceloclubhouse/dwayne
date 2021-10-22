@@ -15,6 +15,7 @@ To use Dwayne, you need to link him to an existing Discord bot via token, then r
 
 ## Commands
 * !play - Play a YouTube video in a voice channel
+  * Works either with a URL or a query (e.g. !play here comes the sun)
 * !stop - Stop playing music
 * !heydwayne - Ping Dwayne to see if he's online
 
@@ -31,7 +32,8 @@ chmod +x dwayne.sh
 ./dwayne.sh
 ```
 
-Upon running this script the first time, you will be asked to provide your bot's access token. 
+Upon running this script the first time, you will be asked to provide your bot's access token, and optionally a
+YouTube Data API key if you want to enable queries. 
 You only need to provide this once; the script will automatically clone this database, perform the required setup, 
 and can be called after the initial installation to run Dwayne whenever you want.
 

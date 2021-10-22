@@ -24,8 +24,9 @@ fi
 if ! test -f "yt_api_key.txt"; then
     echo -e "$name : YouTube Data API key not found. If you want to enable play queries (e.g. '!play here comes the sun'), paste an API key here: "
     read yt_key
-    if yt_key != ""; then
-        echo -e "$yt_key" > yt_api_key.txt
+    if [ -n "$yt_key" ]; then
+        echo -e "$name : Saving token as dwayne/yt_api_key.txt"
+        echo "$yt_key" > yt_api_key.txt
     fi
 fi
 echo -e "$name : Deleting old Dwayne files..."
@@ -42,6 +43,8 @@ if [ ! -d "venv" ]; then
     source venv/bin/activate
     echo -e "$name : Installing Dwayne's packages..."
     pip3 install -r "requirements.txt"
+    echo -e "$name : Copying YouTube Data API Key to dwayne/yt_api_key.txt"
+    cp ../yt_api_key.txt yt_api_key.txt
     echo -e "$name : Exiting environment and going back to root directory..."
     deactivate
     cd ..
