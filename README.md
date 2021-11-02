@@ -8,6 +8,7 @@ Dwayne is a Discord bot backend designed to control music-streaming via YouTube 
 * Pip 3
 * macOS or Linux
   * Dwayne will run under Windows but since I don't know Powershell there's no setup script :(
+* ffmpeg 
 * Discord Developer account
 
 ## Commands
