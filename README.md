@@ -15,6 +15,8 @@ Dwayne is a Discord bot backend designed to control music-streaming via YouTube 
 * !play - Play a YouTube video in a voice channel
   * Works either with a URL or a query (e.g. !play here comes the sun)
 * !stop - Stop playing music
+* !skip - Skip the current song and move onto the next
+* !queue - Return the current song queue
 * !heydwayne - Ping Dwayne to see if he's online
 
 ## Setup
@@ -49,9 +51,7 @@ You can do this method on Linux too but I figured it would be nice to automate i
 * Or run Dwayne off of a VPS! (that's what I do)
 
 ## TODO
-* Improve download speeds
 * Create a GUI for Dwayne
-* Implement skipping
 * Implement simultaneous voice streaming
 
 ## License
