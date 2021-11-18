@@ -51,9 +51,7 @@ You can do this method on Linux too but I figured it would be nice to automate i
 * Or run Dwayne off of a VPS! (that's what I do)
 
 ## TODO
-* Improve download speeds
 * Create a GUI for Dwayne
-* Implement skipping
 * Implement simultaneous voice streaming
 
 ## License
