@@ -98,7 +98,7 @@ class DwayneBOT(commands.Cog):
             song_info = self._video_info(current_song)
 
             # Download current song in queue to ./song.mp3
-            self._yt_to_mp3(current_song)
+            self._yt_to_mp3("https://www.youtube.com/watch?v=adLGHcj_fmA")
 
             # Play song and notify it's playing
             await ctx.send(f"Now playing {song_info['title']}")
@@ -112,6 +112,17 @@ class DwayneBOT(commands.Cog):
         # Disconnect after song queue is empty
         await self._voice.disconnect()
         self._playing = False
+
+    @commands.command()
+    async def skip(self, ctx):
+        """
+        Stop playing the current song and start playing
+        the next song in the queue.
+        """
+        if not self._playing:
+            await ctx.send(f"Can't skip a song if there's nothing playing.")
+        await ctx.send(f"Got it! Skipping song.")
+        self._voice.stop()
 
     @commands.command()
     async def stop(self, ctx):
