@@ -112,17 +112,27 @@ class DwayneBOT(commands.Cog):
         # Disconnect after song queue is empty
         await self._voice.disconnect()
         self._playing = False
+        await ctx.send(f"No more songs to play. See you later!")
 
     @commands.command()
     async def skip(self, ctx):
         """
-        Stop playing the current song and start playing
-        the next song in the queue.
+        Stop playing the current song.
         """
         if not self._playing:
             await ctx.send(f"Can't skip a song if there's nothing playing.")
         await ctx.send(f"Got it! Skipping song.")
         self._voice.stop()
+
+    @commands.command()
+    async def queue(self, ctx):
+        """
+        Return the current song queue.
+        """
+        if self._playing:
+            await ctx.send(f"Current song queue is: ", embed=self._queue_as_embed(ctx))
+        else:
+            await ctx.send(f"No songs in the queue.")
 
     @commands.command()
     async def stop(self, ctx):
