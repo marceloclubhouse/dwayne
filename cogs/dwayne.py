@@ -106,7 +106,7 @@ class DwayneBOT(commands.Cog):
             try:
                 await ctx.send(f"Now playing {song_info['title']}")
                 self._voice.play(discord.FFmpegPCMAudio('song.mp3'))
-            except discord.ext.commands.errors.CommandInvokeError:
+            except discord.errors.ClientException:
                 self._voice.stop()
                 self._playing = False
                 return
