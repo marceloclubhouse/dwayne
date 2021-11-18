@@ -100,9 +100,16 @@ class DwayneBOT(commands.Cog):
             # Download current song in queue to ./song.mp3
             self._yt_to_mp3(current_song)
 
-            # Play song and notify it's playing
-            await ctx.send(f"Now playing {song_info['title']}")
-            self._voice.play(discord.FFmpegPCMAudio('song.mp3'))
+            # Play song and notify it's playing. If the bot was
+            # disconnected while downloading the video, then
+            # don't attempt to play the song.
+            try:
+                await ctx.send(f"Now playing {song_info['title']}")
+                self._voice.play(discord.FFmpegPCMAudio('song.mp3'))
+            except discord.ext.commands.errors.CommandInvokeError:
+                self._voice.stop()
+                self._playing = False
+                return
 
             # Play until the song is over
             while self._voice.is_playing():
