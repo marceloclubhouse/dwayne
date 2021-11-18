@@ -106,6 +106,8 @@ class DwayneBOT(commands.Cog):
             try:
                 await ctx.send(f"Now playing {song_info['title']}")
                 self._voice.play(discord.FFmpegPCMAudio('song.mp3'))
+                if len(self._song_queue) > 0:
+                    await ctx.send(f"Current song queue is: ", embed=self._queue_as_embed(ctx))
             except discord.errors.ClientException:
                 self._voice.stop()
                 self._playing = False
@@ -136,10 +138,10 @@ class DwayneBOT(commands.Cog):
         """
         Return the current song queue.
         """
-        if self._playing:
-            await ctx.send(f"Current song queue is: ", embed=self._queue_as_embed(ctx))
-        else:
+        if len(self._song_queue) == 0 or not self._playing:
             await ctx.send(f"No songs in the queue.")
+        else:
+            await ctx.send(f"Current song queue is: ", embed=self._queue_as_embed(ctx))
 
     @commands.command()
     async def stop(self, ctx):
