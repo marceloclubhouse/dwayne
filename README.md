@@ -27,6 +27,7 @@ First, follow this tutorial on the Discord Developer Portal to create a bot
 ### Linux or Mac
 Then download and run the installation script
 ```
+# dnf/pacman/apt install ffmpeg
 wget https://github.com/marceloclubhouse/dwayne/releases/download/v0.1.0/dwayne.sh
 chmod +x dwayne.sh
 ./dwayne.sh
