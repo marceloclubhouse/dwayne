@@ -16,6 +16,7 @@ import re
 import sys
 import requests
 from discord.ext import commands
+from youtube_dl.utils import DownloadError
 
 
 class DwayneBOT(commands.Cog):
@@ -77,10 +78,16 @@ class DwayneBOT(commands.Cog):
             await ctx.send(f"You must be connected to a voice channel to play songs.")
             return
 
-        # Always start by queueing the song in internal list
-        self._song_queue.append(url)
         # Get YouTube video info with YT libs
-        song_info = self._video_info(url)
+        try:
+            song_info = self._video_info(url)
+        except DownloadError:
+            await ctx.send(f"Oof, afraid I cannot play that. Video is age restricted.")
+            return
+
+        # Start by queueing the song in internal list if it's valid
+        self._song_queue.append(url)
+
         # If a song is already playing, then queue it and return
         if self._playing:
             await ctx.send(f"Got it! Just queued {song_info['title']}. Current song queue is:",
