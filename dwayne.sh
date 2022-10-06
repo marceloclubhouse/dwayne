@@ -33,6 +33,7 @@ echo -e "$name : Deleting old Dwayne files..."
 rm -frv dwayne
 echo -e "$name : Cloning new Dwayne files from Github repo..."
 git clone https://github.com/marceloclubhouse/dwayne
+git checkout multiserver
 cd dwayne || return
 if [ ! -d "venv" ]; then
     echo -e "$name : Virtual environment not found."
