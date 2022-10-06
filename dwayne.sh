@@ -36,7 +36,6 @@ git clone https://github.com/marceloclubhouse/dwayne
 cd dwayne
 git checkout multiserver
 git pull
-cd dwayne || return
 if [ ! -d "venv" ]; then
     echo -e "$name : Virtual environment not found."
     echo -e "$name : Installing virtualenv..."
