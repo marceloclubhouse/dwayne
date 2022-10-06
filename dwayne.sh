@@ -33,6 +33,7 @@ echo -e "$name : Deleting old Dwayne files..."
 rm -frv dwayne
 echo -e "$name : Cloning new Dwayne files from Github repo..."
 git clone https://github.com/marceloclubhouse/dwayne
+cd dwayne
 git checkout multiserver
 git pull
 cd dwayne || return
