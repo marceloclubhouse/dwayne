@@ -39,7 +39,7 @@ if [ ! -d "venv" ]; then
     echo -e "$name : Installing virtualenv..."
     pip3 install virtualenv
     echo -e "$name : Creating virtual environment..."
-    virtualenv venv
+    python3 -m virtualenv venv
     source venv/bin/activate
     echo -e "$name : Installing Dwayne's packages..."
     pip3 install -r "requirements.txt"
