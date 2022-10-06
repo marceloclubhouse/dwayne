@@ -19,5 +19,5 @@ typing-extensions
 urllib3
 websockets
 yarl
-youtube-dl
+youtube-dl==2021.12.17
 yt-dlp
