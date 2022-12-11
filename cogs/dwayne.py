@@ -86,9 +86,9 @@ class DwayneBOT(commands.Cog):
         guild_id = ctx.guild.id
         if "entries" in request:
             for video in request["entries"]:
-                self._song_queue[guild_id].append(f"https://www.youtube.com/watch?v={video['id']}")
+                self._song_queue[guild_id].append(video)
         else:
-            self._song_queue[guild_id].append(url)
+            self._song_queue[guild_id].append(request)
 
         # This message works with playlists and individual videos
         await ctx.send(f"Got it! Just queued {request['title']}. Current song queue is:",
@@ -105,8 +105,8 @@ class DwayneBOT(commands.Cog):
         # Song playing loop for music queue
         while len(self._song_queue[guild_id]) != 0:
             self._playing[guild_id] = True
-            current_song = self._song_queue[guild_id].pop(0)
-            song_info = self._video_info(current_song)
+            song_info = self._song_queue[guild_id].pop(0)
+            current_song = f"https://www.youtube.com/watch?v={song_info['id']}"
 
             # Download current song in queue to ./song.mp3
             self._yt_to_mp3(guild_id, current_song)
@@ -214,8 +214,7 @@ class DwayneBOT(commands.Cog):
         """
         embed = discord.Embed(title='Dwayne\'s Song Queue')
         for song in self._song_queue[ctx.guild.id]:
-            song_info = self._video_info(song)
-            embed.add_field(name=song_info['title'], value=song_info['channel'], inline=False)
+            embed.add_field(name=song['title'], value=song['channel'], inline=False)
         embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
         return embed
 
