@@ -1,7 +1,7 @@
 """
 dwayne
 A back-end Discord bot created as an alternative to Groovy and Rhythm
-Copyright (C) 2021 Marcelo Cubillos
+Copyright (C) 2021-2023 Marcelo Cubillos
 This project is available under the MIT license, see LICENSE.txt for more details
 
 dwayne.py
@@ -15,6 +15,7 @@ import os
 import re
 import sys
 import requests
+from collections import defaultdict
 from discord.ext import commands
 from youtube_dl.utils import DownloadError
 
@@ -26,9 +27,9 @@ class DwayneBOT(commands.Cog):
 
     def __init__(self, bot, **kwargs):
         self._bot = bot
-        self._song_queue = []
-        self._voice = None
-        self._playing = False
+        self._song_queue = defaultdict(list)
+        self._voice = dict()
+        self._playing = defaultdict(bool)
         self._yt_api_key = None
 
         # Not sure if it's possible to pass arguments
@@ -60,15 +61,11 @@ class DwayneBOT(commands.Cog):
         # Check if URL is a valid YouTube link
         url: str = args[0]
         if not self._validate_url(url):
-            # If no YouTube API token was specified
-            # when Dwayne was ran, then don't search
-            # for videos.
+            # If no YouTube API token was specified when Dwayne was ran, then don't search for videos.
             if not self._yt_api_key:
                 await ctx.send(f"Invalid URL!")
                 return
-            # Otherwise, use !play parameters as
-            # search query and find the URL of
-            # the top search result.
+            # Otherwise, use !play parameters as search query and find the URL of the top search result.
             else:
                 url = self._query_to_url(args)
                 await ctx.send(f"{url}")
@@ -80,52 +77,59 @@ class DwayneBOT(commands.Cog):
 
         # Get YouTube video info with YT libs
         try:
-            song_info = self._video_info(url)
+            request = self._video_info(url)
         except DownloadError:
-            await ctx.send(f"Oof, afraid I cannot play that. Video is age restricted.")
+            await ctx.send(f"Oof, afraid I cannot play that. Bad request.")
             return
 
         # Start by queueing the song in internal list if it's valid
-        self._song_queue.append(url)
+        guild_id = ctx.guild.id
+        if "entries" in request:
+            for video in request["entries"]:
+                self._song_queue[guild_id].append(video)
+        else:
+            self._song_queue[guild_id].append(request)
 
-        # If a song is already playing, then queue it and return
-        if self._playing:
-            await ctx.send(f"Got it! Just queued {song_info['title']}. Current song queue is:",
-                           embed=self._queue_as_embed(ctx))
+        # This message works with playlists and individual videos
+        await ctx.send(f"Got it! Just queued {request['title']}. Current song queue is:",
+                       embed=self._queue_as_embed(ctx))
+
+        # If a song is already playing, then there's no need to continue
+        if self._playing[guild_id]:
             return
 
         # Connect to author's voice channel
-        self._voice = await channel.connect()
-        await ctx.send(f"You got it boss. Preparing to stream {song_info['title']}")
+        self._voice[guild_id] = await channel.connect()
+        await ctx.send(f"You got it boss. Preparing to stream {request['title']}")
 
         # Song playing loop for music queue
-        while len(self._song_queue) != 0:
-            self._playing = True
-            current_song = self._song_queue.pop(0)
-            song_info = self._video_info(current_song)
+        while len(self._song_queue[guild_id]) != 0:
+            self._playing[guild_id] = True
+            song_info = self._song_queue[guild_id].pop(0)
+            current_song = f"https://www.youtube.com/watch?v={song_info['id']}"
 
             # Download current song in queue to ./song.mp3
-            self._yt_to_mp3(current_song)
+            self._yt_to_mp3(guild_id, current_song)
 
             # Play song and notify it's playing. If the bot was
             # disconnected while downloading the video, then
             # don't attempt to play the song.
             try:
                 await ctx.send(f"Now playing {song_info['title']}")
-                self._voice.play(discord.FFmpegPCMAudio('song.mp3'))
+                self._voice[guild_id].play(discord.FFmpegPCMAudio(f'{guild_id}.mp3'))
             except discord.errors.ClientException:
-                self._voice.stop()
-                self._playing = False
+                self._voice[guild_id].stop()
+                self._playing[guild_id] = False
                 return
 
             # Play until the song is over
-            while self._voice.is_playing():
+            while self._voice[guild_id].is_playing():
                 await asyncio.sleep(1)
-            self._voice.stop()
+            self._voice[guild_id].stop()
 
         # Disconnect after song queue is empty
-        await self._voice.disconnect()
-        self._playing = False
+        await self._voice[guild_id].disconnect()
+        self._playing[guild_id] = False
         await ctx.send(f"No more songs to play. See you later!")
 
     @commands.command()
@@ -133,17 +137,17 @@ class DwayneBOT(commands.Cog):
         """
         Stop playing the current song.
         """
-        if not self._playing:
+        if not self._playing[ctx.guild.id]:
             await ctx.send(f"Can't skip a song if there's nothing playing.")
         await ctx.send(f"Got it! Skipping song.")
-        self._voice.stop()
+        self._voice[ctx.guild.id].stop()
 
     @commands.command()
     async def queue(self, ctx):
         """
         Return the current song queue.
         """
-        if self._playing:
+        if self._playing[ctx.guild.id]:
             await ctx.send(f"Current song queue is: ", embed=self._queue_as_embed(ctx))
         else:
             await ctx.send(f"No songs in the queue.")
@@ -153,16 +157,16 @@ class DwayneBOT(commands.Cog):
         """
         Empty song queue and disconnect Dwayne from voice
         """
-        if not self._playing:
+        if not self._playing[ctx.guild.id]:
             await ctx.send("Can't stop playing music if there is no music playing.")
             return
-        self._song_queue = list()
-        self._voice.stop()
-        await self._voice.disconnect()
+        self._song_queue[ctx.guild.id] = list()
+        self._voice[ctx.guild.id].stop()
+        await self._voice[ctx.guild.id].disconnect()
         await ctx.send("Got it. Stopping music and emptying song queue.")
 
     @staticmethod
-    def _yt_to_mp3(url: str) -> None:
+    def _yt_to_mp3(guild_id: str, url: str) -> None:
         """
         Download YouTube video as 'song.mp3' in current
         directory using yt-dlp
@@ -171,7 +175,7 @@ class DwayneBOT(commands.Cog):
         # Delete previous song
         print("Deleting previous song...")
         try:
-            os.remove("song.mp3")
+            os.remove(f"{guild_id}.mp3")
         except FileNotFoundError:
             pass
 
@@ -185,7 +189,7 @@ class DwayneBOT(commands.Cog):
                 'preferredquality': '192',
             }],
             'keepvideo': False,
-            'outtmpl': "song.mp3",
+            'outtmpl': f"{guild_id}.mp3",
             'throttled-rate': '100K'
         }
         with yt_dlp.YoutubeDL(options) as ydl:
@@ -204,26 +208,13 @@ class DwayneBOT(commands.Cog):
 
         return url
 
-    def _queue_as_str(self) -> str:
-        """
-        Return song queue as a multi-line string
-        (no longer used, embed cards are used
-        instead but this is kept just in case)
-        """
-        q_str = str()
-        for i, song in enumerate(self._song_queue):
-            q_str += str(i + 1) + ".\t" + self.url_to_title(song) + "\n"
-        return q_str
-
     def _queue_as_embed(self, ctx) -> discord.Embed:
         """
-        Generate a Discord embed card from this object's
-        song queue
+        Generate a Discord embed card from this object's song queue
         """
         embed = discord.Embed(title='Dwayne\'s Song Queue')
-        for song in self._song_queue:
-            song_info = self._video_info(song)
-            embed.add_field(name=song_info['title'], value=song_info['channel'], inline=False)
+        for song in self._song_queue[ctx.guild.id]:
+            embed.add_field(name=song['title'], value=song['channel'], inline=False)
         embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
         return embed
 

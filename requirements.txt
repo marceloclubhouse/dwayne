@@ -19,5 +19,5 @@ typing-extensions==3.10.0.2
 urllib3==1.26.7
 websockets==10.0
 yarl==1.6.3
-youtube-dl==2021.6.6
+youtube-dl==2021.12.17
 yt-dlp==2021.10.10
