@@ -38,12 +38,12 @@ git pull
 if [ ! -d "venv" ]; then
     echo -e "$name : Virtual environment not found."
     echo -e "$name : Installing virtualenv..."
-    pip3 install venv
+    pip install venv
     echo -e "$name : Creating virtual environment..."
-    python3 -m venv venv
+    python -m venv venv
     source venv/bin/activate
     echo -e "$name : Installing Dwayne's packages..."
-    pip3 install -r "requirements.txt"
+    pip install -r "requirements.txt"
     echo -e "$name : Copying YouTube Data API Key to dwayne/yt_api_key.txt"
     cp ../yt_api_key.txt yt_api_key.txt
     echo -e "$name : Exiting environment and going back to root directory..."
