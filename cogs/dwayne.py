@@ -189,7 +189,7 @@ class DwayneBOT(commands.Cog):
                 'preferredquality': '192',
             }],
             'keepvideo': False,
-            'outtmpl': f"{guild_id}.mp3",
+            'outtmpl': f"{guild_id}",
             'throttled-rate': '100K'
         }
         with yt_dlp.YoutubeDL(options) as ydl:

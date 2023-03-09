@@ -34,14 +34,13 @@ rm -frv dwayne
 echo -e "$name : Cloning new Dwayne files from Github repo..."
 git clone https://github.com/marceloclubhouse/dwayne
 cd dwayne
-git checkout multiserver
 git pull
 if [ ! -d "venv" ]; then
     echo -e "$name : Virtual environment not found."
     echo -e "$name : Installing virtualenv..."
-    pip3 install virtualenv
+    pip3 install venv
     echo -e "$name : Creating virtual environment..."
-    python3 -m virtualenv venv
+    python3 -m venv venv
     source venv/bin/activate
     echo -e "$name : Installing Dwayne's packages..."
     pip3 install -r "requirements.txt"
