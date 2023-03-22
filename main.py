@@ -10,6 +10,8 @@ main.py
 import discord
 import argparse
 from discord.ext import commands
+import asyncio
+from cogs.dwayne import DwayneBOT
 
 parser = argparse.ArgumentParser()
 parser.add_argument("token", help="Discord access token")
@@ -17,13 +19,19 @@ args = parser.parse_args()
 TOKEN = args.token
 print(f"Running Dwayne using token: {TOKEN}")
 
+
+async def main():
+    intents = discord.Intents.all()
+    intents.members = True
+    bot = commands.Bot(command_prefix="!", description='Dwayne', intents=intents)
+    async with bot:
+        await bot.add_cog(DwayneBOT(bot))
+        await bot.start(TOKEN)
+
+        @bot.event
+        async def on_ready():
+            print(f'Logged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
+
+
 if __name__ == '__main__':
-    bot = commands.Bot(command_prefix="!", description='Dwayne')
-    bot.load_extension("cogs.dwayne")
-
-    @bot.event
-    async def on_ready():
-        print(f'Logged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
-
-
-    bot.run(TOKEN, bot=True, reconnect=True)
+    asyncio.run(main())

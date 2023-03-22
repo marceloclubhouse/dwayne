@@ -215,7 +215,6 @@ class DwayneBOT(commands.Cog):
         embed = discord.Embed(title='Dwayne\'s Song Queue')
         for song in self._song_queue[ctx.guild.id]:
             embed.add_field(name=song['title'], value=song['channel'], inline=False)
-        embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
         return embed
 
     @staticmethod
@@ -229,7 +228,7 @@ class DwayneBOT(commands.Cog):
         API JSON, and is actually slower than youtube_dl
         in this context.
         """
-        info = youtube_dl.YoutubeDL().extract_info(url=url, download=False)
+        info = yt_dlp.YoutubeDL().extract_info(url=url, download=False)
         return info
 
     @staticmethod
